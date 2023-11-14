@@ -41,7 +41,7 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
             echo "Service updated and started successfully."
             
             # Send notification using webhook only if an update was performed
-            url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=gkWNa3p_I92OafwZQ2wyN8kIZnhMK5vm2WPIvWF8i-0"
+            url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2I"
             curl -X POST -H "Content-Type: application/json" -d '{"text": "node_exporter updated to version '"$VERSION"'."}' "$url_webhook"
             
             # Exit with success
@@ -59,6 +59,7 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     exit 1
 else
     echo "node_exporter is already up-to-date (version $INSTALLED_VERSION)."
+    exit 0
 fi
 
-# Version 2023-11-14_16:47:21
+# Version 2023-11-14_16:52:25
