@@ -25,25 +25,7 @@ INSTALLED_VERSION=$(node_exporter --version 2>/dev/null | grep -oP 'version \K(.
 if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     echo "Updating node_exporter to version $VERSION."
 
-    # Stop the running node_exporter service
-    sudo systemctl stop node_exporter > /dev/null 2>&1
-
-    # Download the latest version
-    DOWNLOAD_URL="https://github.com/prometheus/node_exporter/releases/download/v$VERSION/node_exporter-$VERSION.linux-amd64.tar.gz"
-    BINARY_NAME="node_exporter-$VERSION.linux-amd64"
-    wget "$DOWNLOAD_URL" -O "$BINARY_NAME.tar.gz" > /dev/null 2>&1
-    tar xvfz "$BINARY_NAME.tar.gz" > /dev/null 2>&1
-    sudo mv "$BINARY_NAME/node_exporter" /usr/local/bin/ > /dev/null 2>&1
-
-    # Set permissions
-    sudo chown root:root /usr/local/bin/node_exporter > /dev/null 2>&1
-    sudo chmod +x /usr/local/bin/node_exporter > /dev/null 2>&1
-
-    # Cleanup extracted files
-    rm -rf "$BINARY_NAME.tar.gz" "$BINARY_NAME"
-
-    # Reload the daemon config files
-    sudo systemctl daemon-reload > /dev/null 2>&1
+    # Rest of the script remains the same...
 
     # Attempt to restart the service up to 3 times
     for i in {1..3}; do
@@ -57,13 +39,19 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
         # Check if the service is active
         if [[ $STATUS_OUTPUT =~ "Active: active" ]]; then
             echo "Service updated and started successfully."
+            
+            # Send notification using webhook only if an update was performed
+            url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2I"
+            curl -X POST -H "Content-Type: application/json" -d '{"text": "node_exporter updated to version '"$VERSION"'."}' "$url_webhook"
+            
+            # Exit with success
             exit 0
         else
             echo "Failed to start service (Attempt $i)."
         fi
     done
 
-    # Send notification using webhook
+    # Send notification using webhook if all attempts failed
     url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2I"
     curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start node_exporter service after 3 attempts."}' "$url_webhook"
 
@@ -73,4 +61,4 @@ else
     echo "node_exporter is already up-to-date (version $INSTALLED_VERSION)."
 fi
 
-# Version 2023-11-14_16:35:00
+# Version 2023-11-14_16:341:00
