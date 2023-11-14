@@ -58,8 +58,8 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     # Exit with an error code
     exit 1
 else
-    echo "node_exporter is already up-to-date (version $INSTALLED_VERSION)."
+    echo "node_exporter is already up-to-date (version $INSTALLED_VERSION). Exiting."
     exit 0
 fi
 
-# Version 2023-11-14_17:04:45
+# Version 2023-11-14_17:06:45
