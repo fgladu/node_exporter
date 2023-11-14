@@ -70,11 +70,10 @@ for i in {1..3}; do
 done
 
 # Send notification using webhook if all attempts failed
-url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzq
-KqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
+url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
 curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start node_exporter service on '"$HOSTNAME"' after 3 attempts."}' "$url_webhook"
 
 # Exit with an error code
 exit 1
 
-# Version 2023-11-14_17:54:00
+# Version 2023-11-14_18:00:00
