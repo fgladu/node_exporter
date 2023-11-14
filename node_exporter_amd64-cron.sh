@@ -41,7 +41,7 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
             echo "Service updated and started successfully."
             
             # Send notification using webhook only if an update was performed
-            url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2I"
+            url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
             curl -X POST -H "Content-Type: application/json" -d '{"text": "node_exporter updated to version '"$VERSION"'."}' "$url_webhook"
             
             # Exit with success
@@ -52,7 +52,7 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     done
 
     # Send notification using webhook if all attempts failed
-    url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2I"
+    url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
     curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start node_exporter service after 3 attempts."}' "$url_webhook"
 
     # Exit with an error code
@@ -62,4 +62,4 @@ else
     exit 0
 fi
 
-# Version 2023-11-14_16:52:25
+# Version 2023-11-14_17:04:45
