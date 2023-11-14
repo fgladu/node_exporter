@@ -22,7 +22,7 @@ VERSION="${LATEST_VERSION#v}"
 INSTALLED_VERSION=$(node_exporter --version 2>/dev/null | grep -oP 'version \K(.*?)(?=\s)')
 
 # Compare the installed version with the latest version
-if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
+if [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     echo "Updating node_exporter to version $VERSION."
 
     # Rest of the script remains the same...
@@ -62,4 +62,4 @@ else
     exit 0
 fi
 
-# Version 2023-11-14_17:20:00
+# Version 2023-11-14_17:26:00
