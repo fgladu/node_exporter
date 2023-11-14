@@ -25,8 +25,6 @@ INSTALLED_VERSION=$(node_exporter --version 2>/dev/null | grep -oP 'version \K(.
 if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     echo "Updating node_exporter to version $VERSION."
 
-    # Rest of the script remains the same...
-
     # Stop the running node_exporter service
     sudo systemctl stop node_exporter > /dev/null 2>&1
 
