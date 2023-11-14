@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Get the hostname
+HOSTNAME=$(hostname)
+
+# Compare the GitHub version with the installed version
+if [ "$INSTALLED_VERSION" == "$VERSION" ]; then
+    echo "node_exporter on $HOSTNAME is already up-to-date (version $INSTALLED_VERSION). Exiting."
+    exit 0
+fi
+
+echo "Updating node_exporter on $HOSTNAME from version $INSTALLED_VERSION to version $VERSION."
+
 # Check if running as root
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root." 1>&2
@@ -76,4 +87,4 @@ curl -X POST -H "Content-Type: application/json" -d "{\"text\": \"Failed to star
 # Exit with an error code
 exit 1
 
-# 18:45
+# 18:54
