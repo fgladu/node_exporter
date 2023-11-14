@@ -55,7 +55,7 @@ if [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     for i in {1..3}; do
         # Start and enable the node_exporter service
         sudo systemctl enable --now node_exporter > /dev/null 2>&1
-        sleep 5  # Adjust this sleep time as needed
+        sleep 2  # Adjust this sleep time as needed
 
         # Check the status of the service
         STATUS_OUTPUT=$(sudo systemctl status node_exporter 2>&1)
