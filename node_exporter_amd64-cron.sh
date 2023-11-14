@@ -21,15 +21,11 @@ VERSION="${LATEST_VERSION#v}"
 # Check the currently installed version
 INSTALLED_VERSION=$(node_exporter --version 2>/dev/null | grep -oP 'version \K(.*?)(?=\s)')
 
-# Exit if the version check fails
-if [ -z "$INSTALLED_VERSION" ]; then
-    echo "Failed to determine the currently installed version."
-    exit 1
-fi
-
 # Compare the installed version with the latest version
-if [ "$INSTALLED_VERSION" != "$VERSION" ]; then
-    echo "Updating node_exporter from version $INSTALLED_VERSION to $VERSION."
+if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
+    echo "Updating node_exporter to version $VERSION."
+
+    # Rest of the script remains the same...
 
     # Stop the running node_exporter service
     sudo systemctl stop node_exporter > /dev/null 2>&1
@@ -55,7 +51,7 @@ if [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     for i in {1..3}; do
         # Start and enable the node_exporter service
         sudo systemctl enable --now node_exporter > /dev/null 2>&1
-        sleep 2  # Adjust this sleep time as needed
+        sleep 5  # Adjust this sleep time as needed
 
         # Check the status of the service
         STATUS_OUTPUT=$(sudo systemctl status node_exporter 2>&1)
