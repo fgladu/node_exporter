@@ -47,6 +47,26 @@ fi
 
 echo "Updating node_exporter on $HOSTNAME from version $INSTALLED_VERSION to version $VERSION."
 
-# Rest of the script remains the same...
+# Download the latest version
+DOWNLOAD_URL="https://github.com/prometheus/node_exporter/releases/download/v$VERSION/node_exporter-$VERSION.linux-amd64.tar.gz"
+BINARY_NAME="node_exporter-$VERSION.linux-amd64"
 
-# Version 2023-11-14_18:19:00
+# Stop the running node_exporter service
+systemctl stop node_exporter
+
+# Download and install the latest version
+wget "$DOWNLOAD_URL" -O "$BINARY_NAME.tar.gz"
+tar xvfz "$BINARY_NAME.tar.gz" -C /usr/local/bin/ --strip-components=1
+chmod +x /usr/local/bin/node_exporter
+rm -f "$BINARY_NAME.tar.gz"
+
+# Reload the daemon config files
+systemctl daemon-reload
+
+# Start the node_exporter service
+systemctl start node_exporter
+
+# Verify the update
+systemctl status node_exporter
+
+# Version 2023-11-14_18:25:00
