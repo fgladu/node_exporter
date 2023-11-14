@@ -64,7 +64,7 @@ if [ -z "$INSTALLED_VERSION" ] || [ "$INSTALLED_VERSION" != "$VERSION" ]; then
     done
 
     # Send notification using webhook
-    url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2W"
+    url_webhook="https://chat.googleapis.com/v1/spaces/AAAAc6zAGns/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7BjA6cigOrHq1AJpopqcCSRn06aE-wJwVSUhE3xcy2I"
     curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start node_exporter service after 3 attempts."}' "$url_webhook"
 
     # Exit with an error code
@@ -73,4 +73,4 @@ else
     echo "node_exporter is already up-to-date (version $INSTALLED_VERSION)."
 fi
 
-# Version 2023-11-14_16:26:30
+# Version 2023-11-14_16:35:00
