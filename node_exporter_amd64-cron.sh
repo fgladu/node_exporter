@@ -17,10 +17,27 @@ get_installed_version() {
 # Check the currently installed version
 INSTALLED_VERSION=$(get_installed_version)
 
-# Exit if unable to determine the installed version
+# Check if the installation is needed
 if [ -z "$INSTALLED_VERSION" ]; then
-    echo "$(date +"%Y-%m-%d %H:%M:%S") - Failed to determine the currently installed version." >> "$LOG_FILE"
-    exit 1
+    echo "$(date +"%Y-%m-%d %H:%M:%S") - Installing node_exporter." >> "$LOG_FILE"
+    
+    # Uncomment and replace the line below with your actual installation command
+    # For example, you might use: apt-get install -y node-exporter
+    # or any other installation method depending on your system
+    # For now, let's assume it's installing from a custom binary
+    # cp /path/to/custom/node_exporter /usr/local/bin/
+    
+    # Uncomment and replace the line below with your actual installation command
+    # cp /path/to/custom/node_exporter /usr/local/bin/
+    
+    # Attempt to determine the installed version again
+    INSTALLED_VERSION=$(get_installed_version)
+
+    # If still unable to determine the installed version, exit with an error
+    if [ -z "$INSTALLED_VERSION" ]; then
+        echo "$(date +"%Y-%m-%d %H:%M:%S") - Failed to determine the currently installed version after installation." >> "$LOG_FILE"
+        exit 1
+    fi
 fi
 
 # Fetch the latest version using GitHub API
@@ -49,7 +66,8 @@ systemctl stop node_exporter >> "$LOG_FILE" 2>&1
 
 # Replace the old binary with the new one
 echo "$(date +"%Y-%m-%d %H:%M:%S") - Copying the new node_exporter binary to /usr/local/bin/." >> "$LOG_FILE"
-cp /path/to/new/node_exporter /usr/local/bin/ >> "$LOG_FILE" 2>&1
+# Uncomment and replace the line below with your actual installation command
+# cp /path/to/new/node_exporter /usr/local/bin/
 
 # Start the node_exporter service
 echo "$(date +"%Y-%m-%d %H:%M:%S") - Starting the node_exporter service." >> "$LOG_FILE"
@@ -82,4 +100,4 @@ else
     exit 1
 fi
 
-# 10:14
+# 10:23
