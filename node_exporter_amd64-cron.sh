@@ -44,12 +44,15 @@ fi
 echo "$(date +"%Y-%m-%d %H:%M:%S") - Updating node_exporter from version $INSTALLED_VERSION to version $VERSION." >> "$LOG_FILE"
 
 # Stop the node_exporter service
+echo "$(date +"%Y-%m-%d %H:%M:%S") - Stopping the node_exporter service." >> "$LOG_FILE"
 systemctl stop node_exporter >> "$LOG_FILE" 2>&1
 
 # Replace the old binary with the new one
+echo "$(date +"%Y-%m-%d %H:%M:%S") - Copying the new node_exporter binary to /usr/local/bin/." >> "$LOG_FILE"
 cp /path/to/new/node_exporter /usr/local/bin/ >> "$LOG_FILE" 2>&1
 
 # Start the node_exporter service
+echo "$(date +"%Y-%m-%d %H:%M:%S") - Starting the node_exporter service." >> "$LOG_FILE"
 systemctl start node_exporter >> "$LOG_FILE" 2>&1
 
 # Sleep to allow the service to start
@@ -79,4 +82,4 @@ else
     exit 1
 fi
 
-# 10:09
+# 10:14
