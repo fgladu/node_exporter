@@ -22,7 +22,7 @@ INSTALLED_VERSION=$(get_installed_version)
 
 # Comparer la version GitHub avec la version installée
 if [ "$INSTALLED_VERSION" == "$VERSION" ]; then
-	echo "node_exporter est déjà à jour (version $INSTALLED_VERSION) sur $(hostname). Sortie."
+	echo "Rien à faire! node_exporter est déjà à jour (version $INSTALLED_VERSION) sur $(hostname). Opération terminée."
 	exit 0
 fi
 
@@ -78,4 +78,4 @@ else
 	exit 1
 fi
 
-# 15:58
+# 16:01
