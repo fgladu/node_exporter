@@ -43,39 +43,40 @@ fi
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") - Updating node_exporter from version $INSTALLED_VERSION to version $VERSION." >> "$LOG_FILE"
 
-# Attempt to restart the service up to 3 times
-for i in {1..3}; do
-    # Stop the node_exporter service
-    systemctl stop node_exporter >> "$LOG_FILE" 2>&1
-    # Update the node_exporter binary
-    cp /path/to/new/node_exporter /usr/local/bin/ >> "$LOG_FILE" 2>&1
-    # Start the node_exporter service
-    systemctl start node_exporter >> "$LOG_FILE" 2>&1
-    sleep 5  # Adjust this sleep time as needed
+# Stop the node_exporter service
+systemctl stop node_exporter >> "$LOG_FILE" 2>&1
 
-    # Check the status of the service
-    STATUS_OUTPUT=$(systemctl status node_exporter 2>&1)
+# Replace the old binary with the new one
+cp /path/to/new/node_exporter /usr/local/bin/ >> "$LOG_FILE" 2>&1
 
-    # Check if the service is active
-    if [[ $STATUS_OUTPUT =~ "Active: active" ]]; then
-        echo "$(date +"%Y-%m-%d %H:%M:%S") - Service updated and started successfully." >> "$LOG_FILE"
+# Start the node_exporter service
+systemctl start node_exporter >> "$LOG_FILE" 2>&1
 
-        # Send notification using webhook only if an update was performed
-        url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=YOUR_API_KEY&token=YOUR_TOKEN"
-        curl -X POST -H "Content-Type: application/json" -d '{"text": "node_exporter updated to version '"$VERSION"'."}' "$url_webhook" >> "$LOG_FILE" 2>&1
+# Sleep to allow the service to start
+sleep 5
 
-        # Exit with success
-        exit 0
-    else
-        echo "$(date +"%Y-%m-%d %H:%M:%S") - Failed to start service (Attempt $i)." >> "$LOG_FILE"
-    fi
-done
+# Check the status of the service
+STATUS_OUTPUT=$(systemctl status node_exporter 2>&1)
 
-# Send notification using webhook if all attempts failed
-url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=YOUR_API_KEY&token=YOUR_TOKEN"
-curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start node_exporter service after 3 attempts."}' "$url_webhook" >> "$LOG_FILE" 2>&1
+# Check if the service is active
+if [[ $STATUS_OUTPUT =~ "Active: active" ]]; then
+    echo "$(date +"%Y-%m-%d %H:%M:%S") - Service updated and started successfully." >> "$LOG_FILE"
 
-# Exit with an error code
-exit 1
+    # Send notification using webhook only if an update was performed
+    url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=YOUR_API_KEY&token=YOUR_TOKEN"
+    curl -X POST -H "Content-Type: application/json" -d '{"text": "node_exporter updated to version '"$VERSION"'."}' "$url_webhook" >> "$LOG_FILE" 2>&1
 
-# 19:24
+    # Exit with success
+    exit 0
+else
+    echo "$(date +"%Y-%m-%d %H:%M:%S") - Failed to start the updated service." >> "$LOG_FILE"
+
+    # Send notification using webhook if the update failed
+    url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=YOUR_API_KEY&token=YOUR_TOKEN"
+    curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start node_exporter service after the update."}' "$url_webhook" >> "$LOG_FILE" 2>&1
+
+    # Exit with an error code
+    exit 1
+fi
+
+# 10:09
