@@ -62,4 +62,4 @@ curl -X POST -H "Content-Type: application/json" -d '{"text": "'"$HOSTNAME"' - F
 # Exit with an error code
 exit 1
 
-# 10:25
+# 10:50
