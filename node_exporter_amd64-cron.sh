@@ -45,7 +45,7 @@ for i in {1..3}; do
 		echo "$HOSTNAME - Service updated and started successfully."
 
 		# Send notification using webhook only if an update was performed
-		url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
+		url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=YOUR_API_KEY&token=YOUR_TOKEN"
 		curl -X POST -H "Content-Type: application/json" -d '{"text": "'"$HOSTNAME"' - node_exporter updated to version '"$VERSION"'."}' "$url_webhook"
 
 		# Exit with success
@@ -56,10 +56,10 @@ for i in {1..3}; do
 done
 
 # Send notification using webhook if all attempts failed
-url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
+url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=YOUR_API_KEY&token=YOUR_TOKEN"
 curl -X POST -H "Content-Type: application/json" -d '{"text": "'"$HOSTNAME"' - Failed to start node_exporter service after 3 attempts."}' "$url_webhook"
 
 # Exit with an error code
 exit 1
 
-# 10:50
+# 10:56
