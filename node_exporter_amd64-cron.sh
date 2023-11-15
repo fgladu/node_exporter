@@ -32,16 +32,33 @@ fi
 echo "Updating node_exporter from version $INSTALLED_VERSION to version $VERSION on $HOSTNAME."
 
 # Download and install the latest version
-echo "Downloading node_exporter $VERSION..."
-curl -L -o /tmp/node_exporter.tar.gz https://github.com/prometheus/node_exporter/releases/download/$VERSION/node_exporter-$VERSION.linux-amd64.tar.gz
+DOWNLOAD_URL="https://github.com/prometheus/node_exporter/releases/download/v$VERSION/node_exporter-$VERSION.linux-amd64.tar.gz"
+BINARY_NAME="node_exporter-$VERSION.linux-amd64"
 
-echo "Extracting files..."
-tar -xzf /tmp/node_exporter.tar.gz -C /tmp/
+# Stop the running node_exporter service
+sudo systemctl stop node_exporter
 
-echo "Copying files to /usr/local/bin/..."
-cp /tmp/node_exporter-$VERSION.linux-amd64/node_exporter /usr/local/bin/
+# Download the latest version
+wget "$DOWNLOAD_URL" -O "$BINARY_NAME.tar.gz"
 
-# Confirm the version after installation
+# Extract the tarball
+tar xvfz "$BINARY_NAME.tar.gz"
+
+# Replace the old binary
+sudo mv "$BINARY_NAME/node_exporter" /usr/local/bin/
+
+# Set permissions
+sudo chown root:root /usr/local/bin/node_exporter
+sudo chmod +x /usr/local/bin/node_exporter
+
+# Cleanup extracted files
+rm -rf "$BINARY_NAME.tar.gz" "$BINARY_NAME"
+
+
+# Start the node_exporter service
+sudo systemctl start node_exporter
+
+# Verify the update
 NEW_INSTALLED_VERSION=$(get_installed_version)
 
 # Send notification using webhook only if an update was performed
@@ -57,5 +74,4 @@ else
 	curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to update node_exporter on '"$HOSTNAME"'. Installed version: '"$NEW_INSTALLED_VERSION"'."}' "$url_webhook"
 	exit 1
 fi
-
-# 13:52
+ # 14:04
