@@ -31,11 +31,15 @@ fi
 
 echo "Updating node_exporter from version $INSTALLED_VERSION to version $VERSION on $HOSTNAME."
 
-# Uncomment and replace the line below with your actual installation command
-# For example, you might use: apt-get install -y node-exporter
-# or any other installation method depending on your system
-# For now, let's assume it's installing from a custom binary
-# cp /path/to/custom/node_exporter /usr/local/bin/
+# Download and install the latest version
+echo "Downloading node_exporter $VERSION..."
+curl -L -o /tmp/node_exporter.tar.gz https://github.com/prometheus/node_exporter/releases/download/$VERSION/node_exporter-$VERSION.linux-amd64.tar.gz
+
+echo "Extracting files..."
+tar -xzf /tmp/node_exporter.tar.gz -C /tmp/
+
+echo "Copying files to /usr/local/bin/..."
+cp /tmp/node_exporter-$VERSION.linux-amd64/node_exporter /usr/local/bin/
 
 # Confirm the version after installation
 NEW_INSTALLED_VERSION=$(get_installed_version)
@@ -49,8 +53,9 @@ if [ "$NEW_INSTALLED_VERSION" == "$VERSION" ]; then
 	exit 0
 else
 	echo "Failed to update service. Exiting."
-	curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to update node_exporter on '"$HOSTNAME"'."}' "$url_webhook"
+	echo "Installed version: $NEW_INSTALLED_VERSION"
+	curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to update node_exporter on '"$HOSTNAME"'. Installed version: '"$NEW_INSTALLED_VERSION"'."}' "$url_webhook"
 	exit 1
 fi
 
-# 13:48
+# 13:50
