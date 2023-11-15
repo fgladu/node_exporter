@@ -20,23 +20,17 @@ VERSION="${LATEST_VERSION#v}"
 # Check the currently installed version
 INSTALLED_VERSION=$(get_installed_version)
 
-# Get the hostname
-HOSTNAME=$(hostname)
-
 # Compare the GitHub version with the installed version
 if [ "$INSTALLED_VERSION" == "$VERSION" ]; then
-	echo "node_exporter is already up-to-date (version $INSTALLED_VERSION) on $HOSTNAME. Exiting."
+	echo "node_exporter is already up-to-date (version $INSTALLED_VERSION) on $(hostname). Exiting."
 	exit 0
 fi
 
-echo "Updating node_exporter from version $INSTALLED_VERSION to version $VERSION on $HOSTNAME."
+echo "Updating node_exporter from version $INSTALLED_VERSION to version $VERSION on $(hostname)."
 
 # Download and install the latest version
 DOWNLOAD_URL="https://github.com/prometheus/node_exporter/releases/download/v$VERSION/node_exporter-$VERSION.linux-amd64.tar.gz"
 BINARY_NAME="node_exporter-$VERSION.linux-amd64"
-
-# Stop the running node_exporter service
-sudo systemctl stop node_exporter
 
 # Download the latest version
 wget "$DOWNLOAD_URL" -O "$BINARY_NAME.tar.gz"
@@ -54,24 +48,34 @@ sudo chmod +x /usr/local/bin/node_exporter
 # Cleanup extracted files
 rm -rf "$BINARY_NAME.tar.gz" "$BINARY_NAME"
 
-
-# Start the node_exporter service
-sudo systemctl start node_exporter
+# Restart the node_exporter service
+sudo systemctl restart node_exporter
 
 # Verify the update
-NEW_INSTALLED_VERSION=$(get_installed_version)
-
-# Send notification using webhook only if an update was performed
-url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
-
-if [ "$NEW_INSTALLED_VERSION" == "$VERSION" ]; then
+if [ "$(get_installed_version)" == "$VERSION" ]; then
 	echo "Service updated and started successfully."
-	curl -X POST -H "Content-Type: application/json" -d '{"text": "node_exporter updated to version '"$VERSION"' on '"$HOSTNAME"'"."}' "$url_webhook"
+
+	# Send notification using webhook
+	url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
+	MESSAGE="$(hostname) - node_exporter updated to version $VERSION."
+	ESCAPED_MESSAGE=$(echo "$MESSAGE" | sed 's/"/\\"/g')
+	JSON_PAYLOAD="{\"text\": \"$ESCAPED_MESSAGE\"}"
+	curl -X POST -H "Content-Type: application/json" -d "$JSON_PAYLOAD" "$url_webhook"
+
+	# Exit with success
 	exit 0
 else
 	echo "Failed to update service. Exiting."
-	echo "Installed version: $NEW_INSTALLED_VERSION"
-	curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to update node_exporter on '"$HOSTNAME"'. Installed version: '"$NEW_INSTALLED_VERSION"'."}' "$url_webhook"
+
+	# Send notification using webhook
+	url_webhook="https://chat.googleapis.com/v1/spaces/AAAAhWiyzzE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=s0DeZk91_SvZdQAozzlhiCcgoKxmCu5nldP9TvlSbr4"
+	MESSAGE="Failed to update node_exporter on $(hostname)."
+	ESCAPED_MESSAGE=$(echo "$MESSAGE" | sed 's/"/\\"/g')
+	JSON_PAYLOAD="{\"text\": \"$ESCAPED_MESSAGE\"}"
+	curl -X POST -H "Content-Type: application/json" -d "$JSON_PAYLOAD" "$url_webhook"
+
+	# Exit with an error code
 	exit 1
 fi
- # 14:04
+
+# 14:11
