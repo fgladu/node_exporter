@@ -45,8 +45,12 @@ echo "$(date +"%Y-%m-%d %H:%M:%S") - Updating node_exporter from version $INSTAL
 
 # Attempt to restart the service up to 3 times
 for i in {1..3}; do
-    # Start and enable the node_exporter service
-    systemctl enable --now node_exporter >> "$LOG_FILE" 2>&1
+    # Stop the node_exporter service
+    systemctl stop node_exporter >> "$LOG_FILE" 2>&1
+    # Update the node_exporter binary
+    cp /path/to/new/node_exporter /usr/local/bin/ >> "$LOG_FILE" 2>&1
+    # Start the node_exporter service
+    systemctl start node_exporter >> "$LOG_FILE" 2>&1
     sleep 5  # Adjust this sleep time as needed
 
     # Check the status of the service
@@ -74,4 +78,4 @@ curl -X POST -H "Content-Type: application/json" -d '{"text": "Failed to start n
 # Exit with an error code
 exit 1
 
-# 19:17
+# 19:24
