@@ -103,3 +103,4 @@ send_notification() {
 			 -d "chat_id=$TELEGRAM_CHAT_ID" \
 			 -d "text=$message"
 }
+# 10:59
